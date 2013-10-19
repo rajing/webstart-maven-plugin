@@ -19,11 +19,15 @@ package org.codehaus.mojo.webstart.generator;
  * under the License.
  */
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
 import org.codehaus.mojo.webstart.AbstractJnlpMojo;
+import org.codehaus.mojo.webstart.JarResource;
 import org.codehaus.mojo.webstart.JnlpExtension;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.util.Iterator;
@@ -107,27 +111,48 @@ public class Generator
             for ( int i = 0; i < artifacts.size(); i++ )
             {
                 Artifact artifact = (Artifact) artifacts.get( i );
-                buffer.append( "<jar href=\"" );
-                if ( jarLibPath != null )
-                {
-                    buffer.append( jarLibPath ).append( "/" );
+                
+                String mainClass = null;
+                if ( config.isArtifactWithMainClass( artifact ) ) {
+                    //jnlp mojo has only one main class, and we can use it
+                    mainClass = config.getJnlp().getMainClass();
                 }
-                buffer.append( artifact.getFile().getName() ).append( "\"" );
-
-                if ( config.isOutputJarVersions() )
-                {
-                    buffer.append( " version=\"" ).append( artifact.getVersion() ).append( "\"" );
-                }
-
-                if ( config.isArtifactWithMainClass( artifact ) )
-                {
-                    buffer.append( " main=\"true\"" );
-                }
-                buffer.append( "/>\n" );
+                JarResource jarResource = new JarResource(artifact, mainClass);
+                String dependencyText = getDependencyText( jarResource, jarLibPath, config.isOutputJarVersions() );
+                
+                buffer.append( dependencyText );
+                buffer.append( "\n" );
             }
             dependenciesText = buffer.toString();
         }
         return dependenciesText;
+    }
+
+    static String getDependencyText( JarResource jarResource, String jarLibPath, boolean outputJarVersion ) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "<jar href=\"" );
+        if ( StringUtils.isNotEmpty( jarLibPath ) )
+        {
+            buffer.append( jarLibPath ).append( "/" );
+        }
+
+        buffer.append( jarResource.getHrefValue() ).append( "\"" );
+
+        // snapshot version should be transfered every time if the timestamp is not the same
+        boolean snapshotVersion = ArtifactUtils.isSnapshot( jarResource.getVersion() );
+        if ( !snapshotVersion ) {
+            if ( outputJarVersion && jarResource.isOutputJarVersion() ) {
+                buffer.append( " version=\"" ).append( jarResource.getVersion() ).append( "\"" );
+            }
+        }
+
+        if ( jarResource.getMainClass() != null )
+        {
+            buffer.append( " main=\"true\"" );
+        }
+        buffer.append( "/>" );
+        
+        return buffer.toString();
     }
 
     static String getExtensionsText( AbstractJnlpMojo config )

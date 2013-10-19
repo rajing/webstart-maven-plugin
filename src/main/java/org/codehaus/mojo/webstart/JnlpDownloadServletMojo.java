@@ -20,6 +20,7 @@ package org.codehaus.mojo.webstart;
  */
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -451,9 +452,10 @@ public class JnlpDownloadServletMojo
                     getModifiedJnlpArtifacts().add( name.substring( 0, name.lastIndexOf( '.' ) ) );
                 }
 
-                if ( jarResource.isOutputJarVersion() )
+                if ( jarResource.isOutputJarVersion() && !ArtifactUtils.isSnapshot( jarResource.getVersion() ) )
                 {
-                    // Create and set a version-less href for this jarResource 
+                    // Create and set a version-less href for this jarResource
+                    // if version is snapshot version then do not create version
                     String hrefValue = buildHrefValue( artifact );
                     jarResource.setHrefValue( hrefValue );
                 }
@@ -576,7 +578,8 @@ public class JnlpDownloadServletMojo
             // we should really improve the way we collect the jarResources
             if ( !jarResourceArtifacts.contains( resolvedArtifact ) )
             {
-                JarResource newJarResource = new JarResource( resolvedArtifact );
+                //transitive dependencies has no main class
+                JarResource newJarResource = new JarResource( resolvedArtifact, null );
                 if ( !jarResources.contains( newJarResource ) && !newJarResource.getType().equals( "pom" ) )
                 {
                     newJarResource.setOutputJarVersion( true );

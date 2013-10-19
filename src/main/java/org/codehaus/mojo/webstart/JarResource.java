@@ -70,7 +70,20 @@ public class JarResource
      */
     public JarResource( Artifact artifact )
     {
+        this( artifact, null );
+    }
+    
+    /**
+     * Creates a new {@code JarResource} that wraps the given artifact with mainClass if current artifact has one.
+     * 
+     * @param artifact The artifact that this instance represents.
+     * @param mainClass main class of artifact
+     * @throws IllegalArgumentException if {@code artifact} is null.
+     */
+    public JarResource( Artifact artifact, String mainClass )
+    {
         setArtifact( artifact );
+        this.mainClass = mainClass;
     }
 
     /**

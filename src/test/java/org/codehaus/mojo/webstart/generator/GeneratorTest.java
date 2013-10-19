@@ -18,6 +18,8 @@ package org.codehaus.mojo.webstart.generator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+
+import org.codehaus.mojo.webstart.JnlpConfig;
 import org.codehaus.mojo.webstart.JnlpMojo;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -55,6 +57,12 @@ public class GeneratorTest
             public boolean isArtifactWithMainClass(Artifact artifact) {
                 return artifact == artifact1;
             }
+            public JnlpConfig getJnlp() {
+                JnlpConfig jnlpConfig = new JnlpConfig();
+                jnlpConfig.setMainClass( "some.Main" );
+                return jnlpConfig;
+            }
+            
         };
 
         assertEquals("", Generator.getDependenciesText(mojo));
@@ -94,6 +102,11 @@ public class GeneratorTest
             }
             public boolean isArtifactWithMainClass(Artifact artifact) {
                 return artifact == artifact1;
+            }
+            public JnlpConfig getJnlp() {
+                JnlpConfig jnlpConfig = new JnlpConfig();
+                jnlpConfig.setMainClass( "some.Main" );
+                return jnlpConfig;
             }
 
             public boolean isPack200()
@@ -141,6 +154,11 @@ public class GeneratorTest
             }
             public boolean isArtifactWithMainClass(Artifact artifact) {
                 return artifact == artifact1;
+            }
+            public JnlpConfig getJnlp() {
+                JnlpConfig jnlpConfig = new JnlpConfig();
+                jnlpConfig.setMainClass( "some.Main" );
+                return jnlpConfig;
             }
 			public String getLibPath() {
                 return "lib";

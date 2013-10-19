@@ -88,26 +88,10 @@ public class JarResourcesGenerator
                     continue;
                 }
 
-                buffer.append( "<jar href=\"" );
-                if ( StringUtils.isNotEmpty( libPath ) )
-                {
-                    buffer.append( libPath );
-                    buffer.append( '/' );
-                }
-                buffer.append( jarResource.getHrefValue() );
-                buffer.append( "\"" );
-
-                if ( jarResource.isOutputJarVersion() )
-                {
-                    buffer.append( " version=\"" ).append( jarResource.getVersion() ).append( "\"" );
-                }
-
-                if ( jarResource.getMainClass() != null )
-                {
-                    buffer.append( " main=\"true\"" );
-                }
-
-                buffer.append( "/>\n" );
+                //creates dependency text for current jar resource always with version
+                String dependencyText = Generator.getDependencyText( jarResource, libPath, true );
+                buffer.append( dependencyText );
+                buffer.append( "\n" );
             }
             jarResourcesText = buffer.toString();
         }

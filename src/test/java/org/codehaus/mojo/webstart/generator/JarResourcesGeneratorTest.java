@@ -69,16 +69,19 @@ public class JarResourcesGeneratorTest extends TestCase
         JarResource jarResource2 = buildJarResource( "href2", "1.2", null, true, true );
         JarResource jarResource3 = buildJarResource( "href3", "1.3", null, false, true );
         JarResource jarResource4 = buildJarResource( "href4", "1.4", null, false, false );
+        JarResource jarResource5 = buildJarResource( "href5", "1.5-SNAPSHOT", null, true, true );
         
         jarResources.add( jarResource1 );
         jarResources.add( jarResource2 );
         jarResources.add( jarResource3 );
         jarResources.add( jarResource4 );
+        jarResources.add( jarResource5 );
         
         
         String expectedText = "\n<jar href=\"href1\" version=\"1.1\" main=\"true\"/>\n"
                              + "<jar href=\"href2\" version=\"1.2\"/>\n"
-                             + "<jar href=\"href3\"/>\n";
+                             + "<jar href=\"href3\"/>\n"
+                             + "<jar href=\"href5\"/>\n";
 
         String actualText = generator.getDependenciesText( );
         
@@ -97,7 +100,8 @@ public class JarResourcesGeneratorTest extends TestCase
 
         String expectedText2 = "\n<jar href=\"myLib/href1\" version=\"1.1\" main=\"true\"/>\n"
                              + "<jar href=\"myLib/href2\" version=\"1.2\"/>\n"
-                             + "<jar href=\"myLib/href3\"/>\n";
+                             + "<jar href=\"myLib/href3\"/>\n"
+                             + "<jar href=\"myLib/href5\"/>\n";
 
         String actualText2 = generator2.getDependenciesText( );
 
