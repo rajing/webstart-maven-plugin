@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The superclass for all JNLP generating MOJOs.
@@ -144,6 +145,11 @@ public abstract class AbstractBaseJnlpMojo
      * @parameter default-value="false"
      */
     private boolean pack200;
+    
+    /**
+     * @parameter
+     */
+    private Map updatedManifestEntries = null;
 
     /**
      * The Sign Config
@@ -1041,8 +1047,8 @@ public abstract class AbstractBaseJnlpMojo
                         "Couldn't delete obsolete signed jar: " + signedJar.getAbsolutePath() );
                 }
             }
-
-            signTool.sign( getSign(), jarFiles[i], signedJar );
+            
+            signTool.sign( getSign(), jarFiles[i], signedJar, updatedManifestEntries );
 
             getLog().debug( "lastModified signedJar:" + signedJar.lastModified() + " unprocessed signed Jar:" +
                                 jarFiles[i].lastModified() );

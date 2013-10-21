@@ -44,6 +44,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation of the {@link SignTool}.
@@ -118,11 +119,25 @@ public class DefaultSignTool
             throw new MojoExecutionException( "Could not find keytool", e );
         }
     }
-
-    public void sign( SignConfig config, File jarFile, File signedJar )
-        throws MojoExecutionException
-    {
-
+    public void sign( SignConfig config, File jarFile, File signedJar ) throws MojoExecutionException {
+    	sign(config, jarFile, signedJar, null);
+    }
+    
+    public void sign( SignConfig config, File jarFile, File signedJar, Map updatedManifestEntries ) throws MojoExecutionException {
+    	if (updatedManifestEntries != null) {
+    		try {
+    			getLogger().info("\n\n=========================================\nAbout to update manifest for: " + jarFile.getAbsolutePath() + "(" + jarFile.length() + " bytes)");
+	        jarFile = UpdateManifest.process(jarFile, updatedManifestEntries);
+    			getLogger().info("Updated manifest in: " + jarFile.getAbsolutePath() + "(" + jarFile.length() + " bytes)\n=========================================\n\n");
+	        
+        } catch (Exception e) {
+	       throw new MojoExecutionException("Failed to update Manifest in: " + jarFile.getAbsolutePath(), e);
+        }
+    	} else {
+    		getLogger().info("\n\n\nNO MANIFEST ENTRIES\n\n\n");
+    	}
+    	
+    
         JarSignerRequest request = config.createSignRequest( jarFile, signedJar );
 
         try

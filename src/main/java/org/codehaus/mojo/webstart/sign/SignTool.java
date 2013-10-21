@@ -22,6 +22,7 @@ package org.codehaus.mojo.webstart.sign;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Tool api for jarsigner operations.
@@ -56,6 +57,17 @@ public interface SignTool
      * @throws MojoExecutionException if something wrong occurs
      */
     void sign( SignConfig config, File jarFile, File signedJar )
+        throws MojoExecutionException;
+
+    /**
+     * Sign a jar using jarsigner.
+     *
+     * @param config    sign configuration
+     * @param jarFile   location of the jar to sign
+     * @param signedJar optional location of the signed jar to produce (if not set, will use the original location)
+     * @throws MojoExecutionException if something wrong occurs
+     */
+    void sign( SignConfig config, File jarFile, File signedJar, Map updatedManifestEntries )
         throws MojoExecutionException;
 
     /**

@@ -119,5 +119,6 @@ public interface SignConfig
     void setSigfile( String sigfile );
 
     void setStoretype( String storetype );
+    
 
 }
